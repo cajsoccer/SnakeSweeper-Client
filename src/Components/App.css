@@ -1,0 +1,33 @@
+.Grid {
+  max-width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.Row {
+  display: table;
+  table-layout: fixed;
+}
+.Square {
+  background-color: darkgrey;
+  text-align: center;
+  width: 20px;
+  height: 20px;
+  display: table-cell;
+  border: 1px solid black;
+}
+
+.Flipped {
+  background-color: white;
+  color: grey;
+}
+
+.OneClose {
+  color: blue;
+}
+.TwoClose {
+  color: green;
+}
+.ThreePlusClose {
+  color: red;
+}
