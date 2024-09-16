@@ -3,12 +3,13 @@ import Row from "./Row";
 import { SquareType } from "../Types";
 
 interface GridProps {
-  setGameOver: (gameOver: boolean) => void;
+  gameOver: boolean;
+  gameEnd: (gameWon: boolean) => void;
 }
 
 let checkedAlreadyList: number[] = [];
 
-function Grid({ setGameOver }: GridProps) {
+function Grid({ gameOver, gameEnd }: GridProps) {
   function getInitGrid(size: number) {
     let initialSquareList: SquareType[][] = [];
     for (let i = 0; i < size; i++) {
@@ -78,51 +79,57 @@ function Grid({ setGameOver }: GridProps) {
         if (
           tempList[i][j].id === id &&
           tempList[i][j].bomb === false &&
-          tempList[i][j].adjacentBombs === 0 &&
           !checkedAlreadyList.includes(id)
         ) {
           tempList[i][j].flipped = true;
           setSquareList(tempList);
-          for (let k = -1; k <= 1; k++) {
-            if (i - 1 >= 0 && j + k >= 0 && j + k <= size - 1) {
-              checkedAlreadyList.push(id);
-              flipAdjacentSquares(tempList[i - 1][j + k].id);
+          if (tempList[i][j].adjacentBombs === 0) {
+            for (let k = -1; k <= 1; k++) {
+              if (i - 1 >= 0 && j + k >= 0 && j + k <= size - 1) {
+                checkedAlreadyList.push(id);
+                flipAdjacentSquares(tempList[i - 1][j + k].id);
+              }
             }
-          }
-          for (let k = -1; k <= 1; k++) {
-            if (k !== 0 && j + k >= 0 && j + k <= size - 1) {
-              checkedAlreadyList.push(id);
-              flipAdjacentSquares(tempList[i][j + k].id);
+            for (let k = -1; k <= 1; k++) {
+              if (k !== 0 && j + k >= 0 && j + k <= size - 1) {
+                checkedAlreadyList.push(id);
+                flipAdjacentSquares(tempList[i][j + k].id);
+              }
             }
-          }
-          for (let k = -1; k <= 1; k++) {
-            if (i + 1 <= size - 1 && j + k >= 0 && j + k <= size - 1) {
-              checkedAlreadyList.push(id);
-              flipAdjacentSquares(tempList[i + 1][j + k].id);
+            for (let k = -1; k <= 1; k++) {
+              if (i + 1 <= size - 1 && j + k >= 0 && j + k <= size - 1) {
+                checkedAlreadyList.push(id);
+                flipAdjacentSquares(tempList[i + 1][j + k].id);
+              }
             }
           }
         }
   }
 
   function gridLeftClickUpdate(id: number) {
-    let tempList = [...squareList];
-    for (let i = 0; i < squareList.length; i++)
-      for (let j = 0; j < squareList.length; j++)
-        if (tempList[i][j].id === id) {
-          tempList[i][j].flipped = true;
-          if (tempList[i][j].bomb) setGameOver(true);
-        }
-    setSquareList(tempList);
-    flipAdjacentSquares(id);
+    if (!gameOver) {
+      let tempList = [...squareList];
+      for (let i = 0; i < squareList.length; i++)
+        for (let j = 0; j < squareList.length; j++)
+          if (tempList[i][j].id === id) {
+            tempList[i][j].flipped = true;
+            if (tempList[i][j].bomb) gameEnd(false);
+          }
+      setSquareList(tempList);
+      flipAdjacentSquares(id);
+      if (getEmptySquareCount() === 0) gameEnd(true);
+    }
   }
 
   function gridRightClickUpdate(id: number) {
-    let tempList = [...squareList];
-    for (let i = 0; i < squareList.length; i++)
-      for (let j = 0; j < squareList.length; j++)
-        if (tempList[i][j].id === id)
-          tempList[i][j].flagged = !tempList[i][j].flagged;
-    setSquareList(tempList);
+    if (!gameOver) {
+      let tempList = [...squareList];
+      for (let i = 0; i < squareList.length; i++)
+        for (let j = 0; j < squareList.length; j++)
+          if (tempList[i][j].id === id)
+            tempList[i][j].flagged = !tempList[i][j].flagged;
+      setSquareList(tempList);
+    }
   }
 
   function hoverUpdate(id: number) {
@@ -132,6 +139,14 @@ function Grid({ setGameOver }: GridProps) {
         if (tempList[i][j].id === id)
           tempList[i][j].hovered = !tempList[i][j].hovered;
     setSquareList(tempList);
+  }
+
+  function getEmptySquareCount() {
+    let count = 0;
+    for (let i = 0; i < squareList.length; i++)
+      for (let j = 0; j < squareList.length; j++)
+        if (!squareList[i][j].bomb && !squareList[i][j].flipped) count++;
+    return count;
   }
 
   const [squareList, setSquareList] = useState(() => getInitGrid(16));
