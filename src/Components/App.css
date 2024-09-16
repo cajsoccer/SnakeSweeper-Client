@@ -1,29 +1,30 @@
 body {
-  background-color: #222;
+	background-color: #222;
 }
 
 .Grid {
-  display: inline-block;
-  margin: auto;
-  margin-top: 50px;
-  border: #888 solid 1px;
+	display: inline-block;
+	margin: auto;
+	margin-top: 50px;
+	border: #888 solid 1px;
 }
 
 .Row {
 	float: left;
 }
 
-.Square, .Flipped {
+.Square,
+.Flipped {
 	background-color: #aaa;
 	width: 30px;
 	height: 30px;
 	border: #888 solid 1px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  font-weight: bold;
-  font-family: 'Courier New', Courier, monospace;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 18px;
+	font-weight: bold;
+	font-family: "Courier New", Courier, monospace;
 }
 
 .Flipped {
@@ -47,5 +48,5 @@ body {
 }
 
 .gameOver {
-  color: white;
+	color: white;
 }
