@@ -7,10 +7,9 @@ interface MineSquareProps {
   square: MineSquareType;
   leftClick: (x: number) => void;
   rightClick: (x: number) => void;
-  hover: (x: number) => void;
 }
 
-function MineSquare({ square, leftClick, rightClick, hover }: MineSquareProps) {
+function MineSquare({ square, leftClick, rightClick }: MineSquareProps) {
   return (
     <div
       onClick={() => leftClick(square.id)}
@@ -18,12 +17,8 @@ function MineSquare({ square, leftClick, rightClick, hover }: MineSquareProps) {
         event.preventDefault();
         rightClick(square.id);
       }}
-      onMouseOver={() => hover(square.id)}
-      onMouseOut={() => hover(square.id)}
       className={
-        "Square" +
-        (!square.flipped && square.hovered ? " Hovered" : "") +
-        (square.flipped ? " Flipped" : "") +
+        (square.flipped ? "Flipped" : "Square") +
         (square.adjacentBombs === 1 ? " OneClose" : "") +
         (square.adjacentBombs === 2 ? " TwoClose" : "") +
         (square.adjacentBombs > 2 ? " ThreePlusClose" : "")

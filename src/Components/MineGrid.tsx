@@ -127,16 +127,7 @@ function MineGrid() {
       setSquareList(tempList);
     }
   }
-
-  function hoverUpdate(id: number) {
-    let tempList = [...squareList];
-    for (let i = 0; i < squareList.length; i++)
-      for (let j = 0; j < squareList.length; j++)
-        if (tempList[i][j].id === id)
-          tempList[i][j].hovered = !tempList[i][j].hovered;
-    setSquareList(tempList);
-  }
-
+  
   function getEmptySquareCount() {
     let count = 0;
     for (let i = 0; i < squareList.length; i++)
@@ -166,7 +157,6 @@ function MineGrid() {
           row={row}
           leftClick={gridLeftClickUpdate}
           rightClick={gridRightClickUpdate}
-          hover={hoverUpdate}
         />
       ))}
       <br></br>

@@ -4,7 +4,7 @@ import MineGrid from "./MineGrid";
 
 function App() {
   return (
-    <div>
+    <div style={{ display: "flex", alignItems: "center", flexDirection: "column" }}>
       <MineGrid />
     </div>
   );

@@ -1,37 +1,51 @@
+body {
+  background-color: #222;
+}
+
 .Grid {
-  max-width: fit-content;
-  margin-left: auto;
-  margin-right: auto;
+  display: inline-block;
+  margin: auto;
+  margin-top: 50px;
+  border: #888 solid 1px;
 }
 
 .Row {
-  display: table;
-  table-layout: fixed;
+	float: left;
 }
-.Square {
-  background-color: darkgrey;
-  text-align: center;
-  width: 20px;
-  height: 20px;
-  display: table-cell;
-  border: 1px solid black;
+
+.Square, .Flipped {
+	background-color: #aaa;
+	width: 30px;
+	height: 30px;
+	border: #888 solid 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+  font-family: 'Courier New', Courier, monospace;
 }
 
 .Flipped {
-  background-color: white;
-  color: grey;
+	background-color: #ddd;
+	color: #bbb;
 }
 
 .OneClose {
-  color: blue;
+	color: blue;
 }
 .TwoClose {
-  color: green;
+	color: green;
 }
 .ThreePlusClose {
-  color: red;
+	color: red;
 }
 
-.Hovered {
-  background-color: beige;
+.Square:hover {
+	background-color: #888;
+	border: #888 solid 1px;
+}
+
+.gameOver {
+  color: white;
 }
