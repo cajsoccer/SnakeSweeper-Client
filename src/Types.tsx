@@ -6,4 +6,5 @@ export interface SquareType {
   flipped: boolean;
   flagged: boolean;
   bomb: boolean;
+  hovered: boolean;
 }

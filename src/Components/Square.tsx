@@ -7,32 +7,32 @@ interface SquareProps {
   square: SquareType;
   leftClick: (x: number) => void;
   rightClick: (x: number) => void;
-  test: boolean;
+  hover: (x: number) => void;
 }
 
-function Square({ square, leftClick, rightClick, test }: SquareProps) {
+function Square({ square, leftClick, rightClick, hover }: SquareProps) {
   return (
     <div
       onClick={() => leftClick(square.id)}
       onContextMenu={() => rightClick(square.id)}
+      onMouseOver={() => hover(square.id)}
+      onMouseOut={() => hover(square.id)}
       className={
         "Square" +
-        (square.flipped || test ? " Flipped" : "") +
+        (!square.flipped && square.hovered ? " Hovered" : "") +
+        (square.flipped ? " Flipped" : "") +
         (square.adjacentBombs === 1 ? " OneClose" : "") +
         (square.adjacentBombs === 2 ? " TwoClose" : "") +
         (square.adjacentBombs > 2 ? " ThreePlusClose" : "")
       }
     >
       {!square.flipped && square.flagged && <Flag />}
-      {(square.flipped || test) && square.bomb && <Bomb />}
-      {(square.flipped || test) &&
+      {square.flipped && square.bomb && <Bomb />}
+      {square.flipped &&
         !square.bomb &&
         square.adjacentBombs > 0 &&
         square.adjacentBombs.toString()}
-      {(square.flipped || test) &&
-        !square.bomb &&
-        square.adjacentBombs === 0 &&
-        "/"}
+      {square.flipped && !square.bomb && square.adjacentBombs === 0 && "/"}
     </div>
   );
 }

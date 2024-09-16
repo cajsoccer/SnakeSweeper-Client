@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import Row from "./Row";
 import { SquareType } from "../Types";
 
-let checkedAlreadyList: number[] = [];
-let foo = 100;
+interface GridProps {
+  setGameOver: (gameOver: boolean) => void;
+}
 
-function Grid() {
+let checkedAlreadyList: number[] = [];
+
+function Grid({ setGameOver }: GridProps) {
   function getInitGrid(size: number) {
     let initialSquareList: SquareType[][] = [];
     for (let i = 0; i < size; i++) {
@@ -19,6 +22,7 @@ function Grid() {
           flipped: false,
           flagged: false,
           bomb: false,
+          hovered: false,
         });
       }
       initialSquareList.push(tempRow);
@@ -65,6 +69,7 @@ function Grid() {
     }
     return initialSquareList;
   }
+
   function flipAdjacentSquares(id: number) {
     let tempList = [...squareList];
     const size = tempList.length;
@@ -76,12 +81,6 @@ function Grid() {
           tempList[i][j].adjacentBombs === 0 &&
           !checkedAlreadyList.includes(id)
         ) {
-          if (foo > 0) {
-            console.log(`FOO: ${foo}`);
-            foo--;
-            console.log(id);
-            console.log(checkedAlreadyList);
-          }
           tempList[i][j].flipped = true;
           setSquareList(tempList);
           for (let k = -1; k <= 1; k++) {
@@ -104,14 +103,19 @@ function Grid() {
           }
         }
   }
+
   function gridLeftClickUpdate(id: number) {
     let tempList = [...squareList];
     for (let i = 0; i < squareList.length; i++)
       for (let j = 0; j < squareList.length; j++)
-        if (tempList[i][j].id === id) tempList[i][j].flipped = true;
+        if (tempList[i][j].id === id) {
+          tempList[i][j].flipped = true;
+          if (tempList[i][j].bomb) setGameOver(true);
+        }
     setSquareList(tempList);
     flipAdjacentSquares(id);
   }
+
   function gridRightClickUpdate(id: number) {
     let tempList = [...squareList];
     for (let i = 0; i < squareList.length; i++)
@@ -120,16 +124,26 @@ function Grid() {
           tempList[i][j].flagged = !tempList[i][j].flagged;
     setSquareList(tempList);
   }
+
+  function hoverUpdate(id: number) {
+    let tempList = [...squareList];
+    for (let i = 0; i < squareList.length; i++)
+      for (let j = 0; j < squareList.length; j++)
+        if (tempList[i][j].id === id)
+          tempList[i][j].hovered = !tempList[i][j].hovered;
+    setSquareList(tempList);
+  }
+
   const [squareList, setSquareList] = useState(() => getInitGrid(16));
   return (
     <div className="Grid">
       {squareList.map((row, index) => (
         <Row
           key={index}
-          test={false}
           row={row}
           leftClick={gridLeftClickUpdate}
           rightClick={gridRightClickUpdate}
+          hover={hoverUpdate}
         />
       ))}
       <br></br>

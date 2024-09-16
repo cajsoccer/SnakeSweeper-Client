@@ -2,23 +2,23 @@ import React from "react";
 import Square from "./Square";
 import { SquareType } from "../Types";
 
-interface SquareProps {
+interface RowProps {
   row: SquareType[];
   leftClick: (x: number) => void;
   rightClick: (x: number) => void;
-  test: boolean;
+  hover: (x: number) => void;
 }
 
-function Row({ row, leftClick, rightClick, test }: SquareProps) {
+function Row({ row, leftClick, rightClick, hover }: RowProps) {
   return (
     <span className="Row">
       {row.map((square, index) => (
         <Square
-          test={test}
           key={index}
           square={square}
           leftClick={leftClick}
           rightClick={rightClick}
+          hover={hover}
         />
       ))}
     </span>
