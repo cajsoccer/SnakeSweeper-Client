@@ -14,7 +14,10 @@ function Square({ square, leftClick, rightClick, hover }: SquareProps) {
   return (
     <div
       onClick={() => leftClick(square.id)}
-      onContextMenu={() => rightClick(square.id)}
+      onContextMenu={(event) => {
+        event.preventDefault();
+        rightClick(square.id);
+      }}
       onMouseOver={() => hover(square.id)}
       onMouseOut={() => hover(square.id)}
       className={
