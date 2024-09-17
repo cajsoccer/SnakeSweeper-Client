@@ -1,4 +1,4 @@
-export interface SquareType {
+export interface MineSquareType {
   id: number;
   xPos: number;
   yPos: number;

@@ -27,10 +27,3 @@ function GameOver({ gameWon }: GameOverProps) {
 }
 
 export default GameOver;
-
-<div className="Grid">
-  <h1>YOU DETONATED A BOMB!</h1>
-  <button onClick={() => window.location.reload()}>
-    Click Here to Restart
-  </button>
-</div>;

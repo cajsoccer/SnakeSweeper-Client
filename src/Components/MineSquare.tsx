@@ -1,16 +1,16 @@
 import React from "react";
-import { SquareType } from "../Types";
+import { MineSquareType } from "../Types";
 import Bomb from "../icons/Bomb";
 import Flag from "../icons/Flag";
 
-interface SquareProps {
-  square: SquareType;
+interface MineSquareProps {
+  square: MineSquareType;
   leftClick: (x: number) => void;
   rightClick: (x: number) => void;
   hover: (x: number) => void;
 }
 
-function Square({ square, leftClick, rightClick, hover }: SquareProps) {
+function MineSquare({ square, leftClick, rightClick, hover }: MineSquareProps) {
   return (
     <div
       onClick={() => leftClick(square.id)}
@@ -40,4 +40,4 @@ function Square({ square, leftClick, rightClick, hover }: SquareProps) {
   );
 }
 
-export default Square;
+export default MineSquare;

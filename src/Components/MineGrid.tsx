@@ -1,19 +1,15 @@
 import React, { useState } from "react";
-import Row from "./Row";
-import { SquareType } from "../Types";
-
-interface GridProps {
-  gameOver: boolean;
-  gameEnd: (gameWon: boolean) => void;
-}
+import MineRow from "./MineRow";
+import { MineSquareType } from "../Types";
+import GameOver from "./GameOver";
 
 let checkedAlreadyList: number[] = [];
 
-function Grid({ gameOver, gameEnd }: GridProps) {
+function MineGrid() {
   function getInitGrid(size: number) {
-    let initialSquareList: SquareType[][] = [];
+    let initialSquareList: MineSquareType[][] = [];
     for (let i = 0; i < size; i++) {
-      let tempRow: SquareType[] = [];
+      let tempRow: MineSquareType[] = [];
       for (let j = 0; j < size; j++) {
         tempRow.push({
           id: i * size + j + 1,
@@ -149,11 +145,23 @@ function Grid({ gameOver, gameEnd }: GridProps) {
     return count;
   }
 
+  function gameEnd(gameWon: boolean) {
+    if (gameWon) {
+      setGameOver(true);
+      setGameWon(true);
+    } else {
+      setGameOver(true);
+    }
+  }
+
   const [squareList, setSquareList] = useState(() => getInitGrid(16));
+  const [gameOver, setGameOver] = useState(false);
+  const [gameWon, setGameWon] = useState(false);
+
   return (
     <div className="Grid">
       {squareList.map((row, index) => (
-        <Row
+        <MineRow
           key={index}
           row={row}
           leftClick={gridLeftClickUpdate}
@@ -162,8 +170,9 @@ function Grid({ gameOver, gameEnd }: GridProps) {
         />
       ))}
       <br></br>
+      {gameOver ? <GameOver gameWon={gameWon} /> : <div></div>}
     </div>
   );
 }
 
-export default Grid;
+export default MineGrid;

@@ -1,19 +1,19 @@
 import React from "react";
-import Square from "./Square";
-import { SquareType } from "../Types";
+import MineSquare from "./MineSquare";
+import { MineSquareType } from "../Types";
 
-interface RowProps {
-  row: SquareType[];
+interface MineRowProps {
+  row: MineSquareType[];
   leftClick: (x: number) => void;
   rightClick: (x: number) => void;
   hover: (x: number) => void;
 }
 
-function Row({ row, leftClick, rightClick, hover }: RowProps) {
+function MineRow({ row, leftClick, rightClick, hover }: MineRowProps) {
   return (
     <span className="Row">
       {row.map((square, index) => (
-        <Square
+        <MineSquare
           key={index}
           square={square}
           leftClick={leftClick}
@@ -25,4 +25,4 @@ function Row({ row, leftClick, rightClick, hover }: RowProps) {
   );
 }
 
-export default Row;
+export default MineRow;
