@@ -160,6 +160,7 @@ function MineGrid() {
 
   return (
     <div className="Grid">
+      <h1>MINESWEEPER</h1>
       {squareList.map((row, index) => (
         <MineRow
           key={index}
@@ -169,7 +170,6 @@ function MineGrid() {
           hover={hoverUpdate}
         />
       ))}
-      <br></br>
       {gameOver ? <GameOver gameWon={gameWon} /> : <div></div>}
     </div>
   );
