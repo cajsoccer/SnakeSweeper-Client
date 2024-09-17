@@ -12,12 +12,7 @@ function MineRow({ row, leftClick, rightClick }: MineRowProps) {
   return (
     <span className="Row">
       {row.map((square, index) => (
-        <MineSquare
-          key={index}
-          square={square}
-          leftClick={leftClick}
-          rightClick={rightClick}
-        />
+        <MineSquare key={index} square={square} leftClick={leftClick} rightClick={rightClick} />
       ))}
     </span>
   );

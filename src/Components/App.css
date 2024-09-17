@@ -1,52 +1,52 @@
 body {
-	background-color: #222;
+  background-color: #222;
 }
 
 .Grid {
-	display: inline-block;
-	margin: auto;
-	margin-top: 50px;
-	border: #888 solid 1px;
+  display: inline-block;
+  margin: auto;
+  margin-top: 50px;
+  border: #888 solid 1px;
 }
 
 .Row {
-	float: left;
+  float: left;
 }
 
 .Square,
 .Flipped {
-	background-color: #aaa;
-	width: 30px;
-	height: 30px;
-	border: #888 solid 1px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	font-size: 18px;
-	font-weight: bold;
-	font-family: "Courier New", Courier, monospace;
+  background-color: #aaa;
+  width: 30px;
+  height: 30px;
+  border: #888 solid 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+  font-family: "Courier New", Courier, monospace;
 }
 
 .Flipped {
-	background-color: #ddd;
-	color: #bbb;
+  background-color: #ddd;
+  color: #bbb;
 }
 
 .OneClose {
-	color: blue;
+  color: blue;
 }
 .TwoClose {
-	color: green;
+  color: green;
 }
 .ThreePlusClose {
-	color: red;
+  color: red;
 }
 
 .Square:hover {
-	background-color: #888;
-	border: #888 solid 1px;
+  background-color: #888;
+  border: #888 solid 1px;
 }
 
 .gameOver {
-	color: white;
+  color: white;
 }
