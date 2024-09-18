@@ -3,9 +3,12 @@ import MineRow from "./MineRow";
 import { MineSquareType } from "../Types";
 import GameOver from "./GameOver";
 
-let checkedAlreadyList: number[] = [];
-
 function MineGrid() {
+  const [squareList, setSquareList] = useState(() => getInitGrid(16));
+  const [gameOver, setGameOver] = useState(false);
+  const [gameWon, setGameWon] = useState(false);
+  let checkedAlreadyList: number[] = [];
+
   function getInitGrid(size: number) {
     let initialSquareList: MineSquareType[][] = [];
     for (let i = 0; i < size; i++) {
@@ -153,10 +156,6 @@ function MineGrid() {
       setGameOver(true);
     }
   }
-
-  const [squareList, setSquareList] = useState(() => getInitGrid(16));
-  const [gameOver, setGameOver] = useState(false);
-  const [gameWon, setGameWon] = useState(false);
 
   return (
     <div className="Grid">
