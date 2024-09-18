@@ -6,20 +6,13 @@ interface MineRowProps {
   row: MineSquareType[];
   leftClick: (x: number) => void;
   rightClick: (x: number) => void;
-  hover: (x: number) => void;
 }
 
-function MineRow({ row, leftClick, rightClick, hover }: MineRowProps) {
+function MineRow({ row, leftClick, rightClick }: MineRowProps) {
   return (
     <span className="Row">
       {row.map((square, index) => (
-        <MineSquare
-          key={index}
-          square={square}
-          leftClick={leftClick}
-          rightClick={rightClick}
-          hover={hover}
-        />
+        <MineSquare key={index} square={square} leftClick={leftClick} rightClick={rightClick} />
       ))}
     </span>
   );

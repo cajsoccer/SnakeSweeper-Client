@@ -6,20 +6,16 @@ interface GameOverProps {
 
 function GameOver({ gameWon }: GameOverProps) {
   return (
-    <div>
+    <div className="gameOver">
       {gameWon ? (
-        <div className="Grid">
+        <div>
           <h1>CONGRATULATIONS, YOU WON!</h1>
-          <button onClick={() => window.location.reload()}>
-            Click Here to Restart
-          </button>
+          <button onClick={() => window.location.reload()}>Click Here to Restart</button>
         </div>
       ) : (
-        <div className="Grid">
+        <div>
           <h1>YOU DETONATED A BOMB!</h1>
-          <button onClick={() => window.location.reload()}>
-            Click Here to Restart
-          </button>
+          <button onClick={() => window.location.reload()}>Click Here to Restart</button>
         </div>
       )}
     </div>

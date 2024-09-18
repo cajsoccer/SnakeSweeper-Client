@@ -39,31 +39,19 @@ function MineGrid() {
     for (let i = 0; i < size; i++) {
       for (let j = 0; j < size; j++) {
         for (let k = -1; k <= 1; k++) {
-          if (
-            i - 1 >= 0 &&
-            j + k >= 0 &&
-            j + k <= size - 1 &&
-            initialSquareList[i - 1][j + k].bomb === true
-          )
+          if (i - 1 >= 0 && j + k >= 0 && j + k <= size - 1 && initialSquareList[i - 1][j + k].bomb === true) {
             initialSquareList[i][j].adjacentBombs++;
+          }
         }
         for (let k = -1; k <= 1; k++) {
-          if (
-            k !== 0 &&
-            j + k >= 0 &&
-            j + k <= size - 1 &&
-            initialSquareList[i][j + k].bomb === true
-          )
+          if (k !== 0 && j + k >= 0 && j + k <= size - 1 && initialSquareList[i][j + k].bomb === true) {
             initialSquareList[i][j].adjacentBombs++;
+          }
         }
         for (let k = -1; k <= 1; k++) {
-          if (
-            i + 1 <= size - 1 &&
-            j + k >= 0 &&
-            j + k <= size - 1 &&
-            initialSquareList[i + 1][j + k].bomb === true
-          )
+          if (i + 1 <= size - 1 && j + k >= 0 && j + k <= size - 1 && initialSquareList[i + 1][j + k].bomb === true) {
             initialSquareList[i][j].adjacentBombs++;
+          }
         }
       }
     }
@@ -73,13 +61,9 @@ function MineGrid() {
   function flipAdjacentSquares(id: number) {
     let tempList = [...squareList];
     const size = tempList.length;
-    for (let i = 0; i < squareList.length; i++)
-      for (let j = 0; j < squareList.length; j++)
-        if (
-          tempList[i][j].id === id &&
-          tempList[i][j].bomb === false &&
-          !checkedAlreadyList.includes(id)
-        ) {
+    for (let i = 0; i < squareList.length; i++) {
+      for (let j = 0; j < squareList.length; j++) {
+        if (tempList[i][j].id === id && tempList[i][j].bomb === false && !checkedAlreadyList.includes(id)) {
           tempList[i][j].flipped = true;
           setSquareList(tempList);
           if (tempList[i][j].adjacentBombs === 0) {
@@ -103,48 +87,52 @@ function MineGrid() {
             }
           }
         }
+      }
+    }
   }
 
   function gridLeftClickUpdate(id: number) {
     if (!gameOver) {
       let tempList = [...squareList];
-      for (let i = 0; i < squareList.length; i++)
-        for (let j = 0; j < squareList.length; j++)
+      for (let i = 0; i < squareList.length; i++) {
+        for (let j = 0; j < squareList.length; j++) {
           if (tempList[i][j].id === id) {
             tempList[i][j].flipped = true;
             if (tempList[i][j].bomb) gameEnd(false);
           }
+        }
+      }
       setSquareList(tempList);
       flipAdjacentSquares(id);
-      if (getEmptySquareCount() === 0) gameEnd(true);
+      if (getEmptySquareCount() === 0) {
+        gameEnd(true);
+      }
     }
   }
 
   function gridRightClickUpdate(id: number) {
     if (!gameOver) {
       let tempList = [...squareList];
-      for (let i = 0; i < squareList.length; i++)
-        for (let j = 0; j < squareList.length; j++)
-          if (tempList[i][j].id === id)
+      for (let i = 0; i < squareList.length; i++) {
+        for (let j = 0; j < squareList.length; j++) {
+          if (tempList[i][j].id === id) {
             tempList[i][j].flagged = !tempList[i][j].flagged;
+          }
+        }
+      }
       setSquareList(tempList);
     }
   }
 
-  function hoverUpdate(id: number) {
-    let tempList = [...squareList];
-    for (let i = 0; i < squareList.length; i++)
-      for (let j = 0; j < squareList.length; j++)
-        if (tempList[i][j].id === id)
-          tempList[i][j].hovered = !tempList[i][j].hovered;
-    setSquareList(tempList);
-  }
-
   function getEmptySquareCount() {
     let count = 0;
-    for (let i = 0; i < squareList.length; i++)
-      for (let j = 0; j < squareList.length; j++)
-        if (!squareList[i][j].bomb && !squareList[i][j].flipped) count++;
+    for (let i = 0; i < squareList.length; i++) {
+      for (let j = 0; j < squareList.length; j++) {
+        if (!squareList[i][j].bomb && !squareList[i][j].flipped) {
+          count++;
+        }
+      }
+    }
     return count;
   }
 
@@ -161,13 +149,7 @@ function MineGrid() {
     <div className="Grid">
       <h1>MINESWEEPER</h1>
       {squareList.map((row, index) => (
-        <MineRow
-          key={index}
-          row={row}
-          leftClick={gridLeftClickUpdate}
-          rightClick={gridRightClickUpdate}
-          hover={hoverUpdate}
-        />
+        <MineRow key={index} row={row} leftClick={gridLeftClickUpdate} rightClick={gridRightClickUpdate} />
       ))}
       {gameOver ? <GameOver gameWon={gameWon} /> : <div></div>}
     </div>
