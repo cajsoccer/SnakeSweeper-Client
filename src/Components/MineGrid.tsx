@@ -4,10 +4,11 @@ import { MineSquareType } from "../Types";
 import GameOver from "./GameOver";
 
 function MineGrid() {
-  const [firstSquareClicked, setFirstSquareClicked] = useState(false);
   const [squareList, setSquareList] = useState(() => getInitGrid(16));
   const [gameOver, setGameOver] = useState(false);
   const [gameWon, setGameWon] = useState(false);
+  const [firstSquareClicked, setFirstSquareClicked] = useState(false);
+  const [flagsLeft, setFlagsLeft] = useState(40);
   let checkedAlreadyList: number[] = [];
 
   function getInitGrid(size: number) {
@@ -31,7 +32,7 @@ function MineGrid() {
     for (let i = 0; i < 40; i++) {
       let randX = Math.floor(Math.random() * size);
       let randY = Math.floor(Math.random() * size);
-      while (initialSquareList[randX][randY].bomb === true) {
+      while (initialSquareList[randX][randY].bomb) {
         randX = Math.floor(Math.random() * size);
         randY = Math.floor(Math.random() * size);
       }
@@ -44,7 +45,7 @@ function MineGrid() {
             i - 1 >= 0 &&
             j + k >= 0 &&
             j + k <= size - 1 &&
-            initialSquareList[i - 1][j + k].bomb === true
+            initialSquareList[i - 1][j + k].bomb
           ) {
             initialSquareList[i][j].adjacentBombs++;
           }
@@ -54,7 +55,7 @@ function MineGrid() {
             k !== 0 &&
             j + k >= 0 &&
             j + k <= size - 1 &&
-            initialSquareList[i][j + k].bomb === true
+            initialSquareList[i][j + k].bomb
           ) {
             initialSquareList[i][j].adjacentBombs++;
           }
@@ -64,7 +65,7 @@ function MineGrid() {
             i + 1 <= size - 1 &&
             j + k >= 0 &&
             j + k <= size - 1 &&
-            initialSquareList[i + 1][j + k].bomb === true
+            initialSquareList[i + 1][j + k].bomb
           ) {
             initialSquareList[i][j].adjacentBombs++;
           }
@@ -75,16 +76,23 @@ function MineGrid() {
   }
 
   function flipAdjacentSquares(id: number) {
+    console.log("first clicked: " + firstSquareClicked);
     let tempList = [...squareList];
     const size = tempList.length;
     for (let i = 0; i < squareList.length; i++) {
       for (let j = 0; j < squareList.length; j++) {
+        if (tempList[i][j].id === id) {
+          console.log("is bomb: " + tempList[i][j].bomb);
+        }
         if (
           tempList[i][j].id === id &&
           tempList[i][j].bomb === false &&
           !checkedAlreadyList.includes(id)
         ) {
           tempList[i][j].flipped = true;
+          if (tempList[i][j].flagged) {
+            setFlagsLeft(flagsLeft + 1);
+          }
           setSquareList(tempList);
           if (tempList[i][j].adjacentBombs === 0) {
             for (let k = -1; k <= 1; k++) {
@@ -117,20 +125,23 @@ function MineGrid() {
       for (let i = 0; i < tempList.length; i++) {
         for (let j = 0; j < tempList.length; j++) {
           if (tempList[i][j].id === id) {
+            if (tempList[i][j].flagged) {
+              return;
+            }
             if (!firstSquareClicked) {
               while (tempList[i][j].bomb) {
                 tempList = getInitGrid(16);
               }
+              setFirstSquareClicked(true);
             }
             tempList[i][j].flipped = true;
             if (tempList[i][j].bomb) {
-              //const bombSound = new Audio(`./sounds/explosion.mp3`);
-              //bombSound.play();
+              const bombSound = new Audio(`./sounds/explosion.mp3`);
+              bombSound.play();
               endGame(false);
             }
             setSquareList(tempList);
             flipAdjacentSquares(id);
-            setFirstSquareClicked(true);
             if (getEmptySquareCount() === 0) {
               endGame(true);
             }
@@ -141,12 +152,20 @@ function MineGrid() {
   }
 
   function gridRightClickUpdate(id: number) {
-    if (!gameOver) {
+    if (!gameOver && firstSquareClicked) {
       let tempList = [...squareList];
       for (let i = 0; i < squareList.length; i++) {
         for (let j = 0; j < squareList.length; j++) {
           if (tempList[i][j].id === id) {
-            tempList[i][j].flagged = !tempList[i][j].flagged;
+            if (tempList[i][j].flagged) {
+              tempList[i][j].flagged = !tempList[i][j].flagged;
+              setFlagsLeft(flagsLeft + 1);
+            } else {
+              if (flagsLeft > 0) {
+                tempList[i][j].flagged = !tempList[i][j].flagged;
+                setFlagsLeft(flagsLeft - 1);
+              }
+            }
           }
         }
       }
@@ -178,6 +197,7 @@ function MineGrid() {
   return (
     <div className="Grid">
       <h1>MINESWEEPER</h1>
+      <h2>{flagsLeft} BOMBS UNMARKED</h2>
       {squareList.map((row, index) => (
         <MineRow
           key={index}

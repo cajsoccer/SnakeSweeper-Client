@@ -29,7 +29,7 @@ function SnakeGrid() {
 
   let headDirection = "left";
   let gamePaused = true;
-  const [squareList, setSquareList] = useState(() => getInitGrid(25));
+  const [squareList, setSquareList] = useState(() => getInitGrid(16));
 
   function getInitGrid(size: number) {
     let initialSquareList: SnakeSquareType[][] = [];
@@ -47,7 +47,7 @@ function SnakeGrid() {
       }
       initialSquareList.push(tempRow);
     }
-    initialSquareList[8][20].head = true;
+    initialSquareList[8][8].head = true;
     return initialSquareList;
   }
 

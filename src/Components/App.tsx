@@ -5,7 +5,9 @@ import SnakedGrid from "./SnakeGrid";
 
 function App() {
   return (
-    <div style={{ display: "flex", alignItems: "center", flexDirection: "column" }}>
+    <div
+      style={{ display: "flex", alignItems: "center", flexDirection: "column" }}
+    >
       <MineGrid />
       <SnakedGrid />
     </div>
