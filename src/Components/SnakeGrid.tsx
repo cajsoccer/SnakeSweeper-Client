@@ -25,7 +25,7 @@ function SnakeGrid() {
     }
   });
 
-  setInterval(() => updateGrid(), 1000);
+  //setInterval(() => updateGrid(), 1000);
 
   let headDirection = "left";
   let gamePaused = true;

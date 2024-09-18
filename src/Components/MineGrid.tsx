@@ -4,6 +4,7 @@ import { MineSquareType } from "../Types";
 import GameOver from "./GameOver";
 
 function MineGrid() {
+  const [firstSquareClicked, setFirstSquareClicked] = useState(false);
   const [squareList, setSquareList] = useState(() => getInitGrid(16));
   const [gameOver, setGameOver] = useState(false);
   const [gameWon, setGameWon] = useState(false);
@@ -39,17 +40,32 @@ function MineGrid() {
     for (let i = 0; i < size; i++) {
       for (let j = 0; j < size; j++) {
         for (let k = -1; k <= 1; k++) {
-          if (i - 1 >= 0 && j + k >= 0 && j + k <= size - 1 && initialSquareList[i - 1][j + k].bomb === true) {
+          if (
+            i - 1 >= 0 &&
+            j + k >= 0 &&
+            j + k <= size - 1 &&
+            initialSquareList[i - 1][j + k].bomb === true
+          ) {
             initialSquareList[i][j].adjacentBombs++;
           }
         }
         for (let k = -1; k <= 1; k++) {
-          if (k !== 0 && j + k >= 0 && j + k <= size - 1 && initialSquareList[i][j + k].bomb === true) {
+          if (
+            k !== 0 &&
+            j + k >= 0 &&
+            j + k <= size - 1 &&
+            initialSquareList[i][j + k].bomb === true
+          ) {
             initialSquareList[i][j].adjacentBombs++;
           }
         }
         for (let k = -1; k <= 1; k++) {
-          if (i + 1 <= size - 1 && j + k >= 0 && j + k <= size - 1 && initialSquareList[i + 1][j + k].bomb === true) {
+          if (
+            i + 1 <= size - 1 &&
+            j + k >= 0 &&
+            j + k <= size - 1 &&
+            initialSquareList[i + 1][j + k].bomb === true
+          ) {
             initialSquareList[i][j].adjacentBombs++;
           }
         }
@@ -63,7 +79,11 @@ function MineGrid() {
     const size = tempList.length;
     for (let i = 0; i < squareList.length; i++) {
       for (let j = 0; j < squareList.length; j++) {
-        if (tempList[i][j].id === id && tempList[i][j].bomb === false && !checkedAlreadyList.includes(id)) {
+        if (
+          tempList[i][j].id === id &&
+          tempList[i][j].bomb === false &&
+          !checkedAlreadyList.includes(id)
+        ) {
           tempList[i][j].flipped = true;
           setSquareList(tempList);
           if (tempList[i][j].adjacentBombs === 0) {
@@ -94,18 +114,28 @@ function MineGrid() {
   function gridLeftClickUpdate(id: number) {
     if (!gameOver) {
       let tempList = [...squareList];
-      for (let i = 0; i < squareList.length; i++) {
-        for (let j = 0; j < squareList.length; j++) {
+      for (let i = 0; i < tempList.length; i++) {
+        for (let j = 0; j < tempList.length; j++) {
           if (tempList[i][j].id === id) {
+            if (!firstSquareClicked) {
+              while (tempList[i][j].bomb) {
+                tempList = getInitGrid(16);
+              }
+            }
             tempList[i][j].flipped = true;
-            if (tempList[i][j].bomb) gameEnd(false);
+            if (tempList[i][j].bomb) {
+              //const bombSound = new Audio(`./sounds/explosion.mp3`);
+              //bombSound.play();
+              endGame(false);
+            }
+            setSquareList(tempList);
+            flipAdjacentSquares(id);
+            setFirstSquareClicked(true);
+            if (getEmptySquareCount() === 0) {
+              endGame(true);
+            }
           }
         }
-      }
-      setSquareList(tempList);
-      flipAdjacentSquares(id);
-      if (getEmptySquareCount() === 0) {
-        gameEnd(true);
       }
     }
   }
@@ -136,7 +166,7 @@ function MineGrid() {
     return count;
   }
 
-  function gameEnd(gameWon: boolean) {
+  function endGame(gameWon: boolean) {
     if (gameWon) {
       setGameOver(true);
       setGameWon(true);
@@ -149,7 +179,12 @@ function MineGrid() {
     <div className="Grid">
       <h1>MINESWEEPER</h1>
       {squareList.map((row, index) => (
-        <MineRow key={index} row={row} leftClick={gridLeftClickUpdate} rightClick={gridRightClickUpdate} />
+        <MineRow
+          key={index}
+          row={row}
+          leftClick={gridLeftClickUpdate}
+          rightClick={gridRightClickUpdate}
+        />
       ))}
       {gameOver ? <GameOver gameWon={gameWon} /> : <div></div>}
     </div>
