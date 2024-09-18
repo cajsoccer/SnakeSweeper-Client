@@ -50,3 +50,7 @@ body {
 .gameOver {
   color: white;
 }
+
+.Head {
+  background-color: purple;
+}
