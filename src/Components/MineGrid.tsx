@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import MineRow from "./MineRow";
 import { MineSquareType } from "../Types";
-import GameOver from "./GameOver";
+import MineGameOver from "./MineGameOver";
 
 function MineGrid() {
   const [squareList, setSquareList] = useState(() => getInitGrid(16));
@@ -85,21 +85,22 @@ function MineGrid() {
   }
 
   function flipAdjacentSquares(id: number) {
-    console.log("first clicked: " + firstSquareClicked);
+    //console.log("first clicked: " + firstSquareClicked);
     let tempList = [...squareList];
     const size = tempList.length;
-    for (let i = 0; i < squareList.length; i++) {
-      for (let j = 0; j < squareList.length; j++) {
+    for (let i = 0; i < tempList.length; i++) {
+      for (let j = 0; j < tempList.length; j++) {
         if (tempList[i][j].id === id) {
           console.log("is bomb: " + tempList[i][j].bomb);
         }
         if (
           tempList[i][j].id === id &&
-          tempList[i][j].bomb === false &&
+          !tempList[i][j].bomb &&
           !checkedAlreadyList.includes(id)
         ) {
           tempList[i][j].flipped = true;
           if (tempList[i][j].flagged) {
+            //console.log("flagged flip");
             setFlagsLeft(flagsLeft + 1);
           }
           setSquareList(tempList);
@@ -164,8 +165,8 @@ function MineGrid() {
   function gridRightClickUpdate(id: number) {
     if (!gameOver && firstSquareClicked) {
       let tempList = [...squareList];
-      for (let i = 0; i < squareList.length; i++) {
-        for (let j = 0; j < squareList.length; j++) {
+      for (let i = 0; i < tempList.length; i++) {
+        for (let j = 0; j < tempList.length; j++) {
           if (tempList[i][j].id === id) {
             if (tempList[i][j].flagged) {
               tempList[i][j].flagged = !tempList[i][j].flagged;
@@ -231,7 +232,7 @@ function MineGrid() {
         />
       ))}
       {gameOver ? (
-        <GameOver gameWon={gameWon} finalTime={finalTime} />
+        <MineGameOver gameWon={gameWon} finalTime={finalTime} />
       ) : (
         <div></div>
       )}

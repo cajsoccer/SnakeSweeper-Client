@@ -5,7 +5,7 @@ interface GameOverProps {
   finalTime: string;
 }
 
-function GameOver({ gameWon, finalTime }: GameOverProps) {
+function MineGameOver({ gameWon, finalTime }: GameOverProps) {
   return (
     <div className="gameOver">
       {gameWon ? (
@@ -29,4 +29,4 @@ function GameOver({ gameWon, finalTime }: GameOverProps) {
   );
 }
 
-export default GameOver;
+export default MineGameOver;

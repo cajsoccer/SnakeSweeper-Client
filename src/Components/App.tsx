@@ -1,6 +1,6 @@
 import React from "react";
 import "../App.css";
-import MineGrid from "./MineGrid";
+//import MineGrid from "./MineGrid";
 import SnakedGrid from "./SnakeGrid";
 
 function App() {
@@ -8,7 +8,6 @@ function App() {
     <div
       style={{ display: "flex", alignItems: "center", flexDirection: "column" }}
     >
-      <MineGrid />
       <SnakedGrid />
     </div>
   );

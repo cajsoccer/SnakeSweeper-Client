@@ -6,7 +6,16 @@ interface SnakeSquareProps {
 }
 
 function SnakeSquare({ square }: SnakeSquareProps) {
-  return <div className={"Square" + (square.head ? " Head" : "")}></div>;
+  return (
+    <div
+      className={
+        "Square" +
+        (square.head ? " Head" : "") +
+        (square.tail ? " Tail" : "") +
+        (square.fruit ? " Fruit" : "")
+      }
+    ></div>
+  );
 }
 
 export default SnakeSquare;
