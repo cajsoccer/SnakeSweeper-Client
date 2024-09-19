@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MineRow from "./MineRow";
 import { MineSquareType } from "../Types";
 import GameOver from "./GameOver";
@@ -9,7 +9,16 @@ function MineGrid() {
   const [gameWon, setGameWon] = useState(false);
   const [firstSquareClicked, setFirstSquareClicked] = useState(false);
   const [flagsLeft, setFlagsLeft] = useState(40);
+  const [timer, setTimer] = useState(0);
+  const [finalTime, setFinalTime] = useState("");
   let checkedAlreadyList: number[] = [];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimer(timer + 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [timer]);
 
   function getInitGrid(size: number) {
     let initialSquareList: MineSquareType[][] = [];
@@ -133,6 +142,7 @@ function MineGrid() {
                 tempList = getInitGrid(16);
               }
               setFirstSquareClicked(true);
+              setTimer(0);
             }
             tempList[i][j].flipped = true;
             if (tempList[i][j].bomb) {
@@ -192,12 +202,26 @@ function MineGrid() {
     } else {
       setGameOver(true);
     }
+    setFinalTime(getTime());
+  }
+
+  function getTime() {
+    const minutes = Math.floor(timer / 60);
+    const minutesStr = minutes < 10 ? `0${minutes}` : `${minutes}`;
+    const seconds = timer % 60;
+    const secondsStr = seconds < 10 ? `0${seconds}` : `${seconds}`;
+    return `${minutesStr}:${secondsStr}`;
   }
 
   return (
     <div className="Grid">
       <h1>MINESWEEPER</h1>
       <h2>{flagsLeft} BOMBS UNMARKED</h2>
+      {firstSquareClicked && !gameOver ? (
+        <h2>TIME ELAPSED: {getTime()}</h2>
+      ) : (
+        <div></div>
+      )}
       {squareList.map((row, index) => (
         <MineRow
           key={index}
@@ -206,7 +230,11 @@ function MineGrid() {
           rightClick={gridRightClickUpdate}
         />
       ))}
-      {gameOver ? <GameOver gameWon={gameWon} /> : <div></div>}
+      {gameOver ? (
+        <GameOver gameWon={gameWon} finalTime={finalTime} />
+      ) : (
+        <div></div>
+      )}
     </div>
   );
 }
