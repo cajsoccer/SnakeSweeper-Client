@@ -5,7 +5,6 @@ body {
 .Grid {
   display: grid;
   grid-template-columns: auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto;
-  padding: 10px;
   border: #888 solid 1px;
 }
 
