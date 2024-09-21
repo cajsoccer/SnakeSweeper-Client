@@ -1,7 +1,6 @@
 export interface MineSquareType {
-  id: number;
-  xPos: number;
-  yPos: number;
+  x: number;
+  y: number;
   adjacentBombs: number;
   flipped: boolean;
   flagged: boolean;

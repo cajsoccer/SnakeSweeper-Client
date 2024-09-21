@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import MineRow from "./MineRow";
+import MineSquare from "./MineSquare";
 import { MineSquareType } from "../Types";
 import MineGameOver from "./MineGameOver";
 
@@ -11,7 +11,6 @@ function MineGrid() {
   const [flagsLeft, setFlagsLeft] = useState(40);
   const [timer, setTimer] = useState(0);
   const [finalTime, setFinalTime] = useState("");
-  let checkedAlreadyList: number[] = [];
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -21,14 +20,12 @@ function MineGrid() {
   }, [timer]);
 
   function getInitGrid(size: number) {
-    let initialSquareList: MineSquareType[][] = [];
+    let initialSquareList: MineSquareType[] = [];
     for (let i = 0; i < size; i++) {
-      let tempRow: MineSquareType[] = [];
       for (let j = 0; j < size; j++) {
-        tempRow.push({
-          id: i * size + j + 1,
-          xPos: i,
-          yPos: j,
+        initialSquareList.push({
+          x: i,
+          y: j,
           adjacentBombs: 0,
           flipped: false,
           flagged: false,
@@ -36,164 +33,109 @@ function MineGrid() {
           hovered: false,
         });
       }
-      initialSquareList.push(tempRow);
     }
     for (let i = 0; i < 40; i++) {
       let randX = Math.floor(Math.random() * size);
       let randY = Math.floor(Math.random() * size);
-      while (initialSquareList[randX][randY].bomb) {
+      let randSquare = getSquare(randX, randY, initialSquareList);
+      while (randSquare.bomb) {
         randX = Math.floor(Math.random() * size);
         randY = Math.floor(Math.random() * size);
+        randSquare = getSquare(randX, randY, initialSquareList);
       }
-      initialSquareList[randX][randY].bomb = true;
+      randSquare.bomb = true;
     }
-    for (let i = 0; i < size; i++) {
-      for (let j = 0; j < size; j++) {
-        for (let k = -1; k <= 1; k++) {
-          if (
-            i - 1 >= 0 &&
-            j + k >= 0 &&
-            j + k <= size - 1 &&
-            initialSquareList[i - 1][j + k].bomb
-          ) {
-            initialSquareList[i][j].adjacentBombs++;
-          }
-        }
-        for (let k = -1; k <= 1; k++) {
-          if (
-            k !== 0 &&
-            j + k >= 0 &&
-            j + k <= size - 1 &&
-            initialSquareList[i][j + k].bomb
-          ) {
-            initialSquareList[i][j].adjacentBombs++;
-          }
-        }
-        for (let k = -1; k <= 1; k++) {
-          if (
-            i + 1 <= size - 1 &&
-            j + k >= 0 &&
-            j + k <= size - 1 &&
-            initialSquareList[i + 1][j + k].bomb
-          ) {
-            initialSquareList[i][j].adjacentBombs++;
-          }
-        }
-      }
-    }
+    initialSquareList.forEach((ps) => {
+      const adjacentSquares = initialSquareList.filter(
+        (ss) =>
+          Math.abs(ps.x - ss.x) <= 1 &&
+          Math.abs(ps.y - ss.y) <= 1 &&
+          !(ps.x === ss.x && ps.y === ss.y)
+      );
+      adjacentSquares.forEach((ss) => {
+        if (ss.bomb) ps.adjacentBombs++;
+      });
+    });
     return initialSquareList;
   }
 
-  function flipAdjacentSquares(id: number) {
-    //console.log("first clicked: " + firstSquareClicked);
+  function flipAdjacentSquares(x: number, y: number) {
     let tempList = [...squareList];
-    const size = tempList.length;
-    for (let i = 0; i < tempList.length; i++) {
-      for (let j = 0; j < tempList.length; j++) {
-        if (tempList[i][j].id === id) {
-          console.log("is bomb: " + tempList[i][j].bomb);
-        }
-        if (
-          tempList[i][j].id === id &&
-          !tempList[i][j].bomb &&
-          !checkedAlreadyList.includes(id)
-        ) {
-          tempList[i][j].flipped = true;
-          if (tempList[i][j].flagged) {
-            //console.log("flagged flip");
-            setFlagsLeft(flagsLeft + 1);
+    let pivotSquare = getSquare(x, y, tempList);
+    if (!pivotSquare.bomb) {
+      pivotSquare.flipped = true;
+      if (pivotSquare.flagged) {
+        pivotSquare.flagged = false;
+      }
+      setSquareList([...tempList]);
+      setFlagsLeft(40 - squareList.filter((s) => s.flagged).length);
+      tempList = [...squareList];
+      pivotSquare = getSquare(x, y, tempList);
+      if (pivotSquare.adjacentBombs === 0) {
+        const adjacentSquares = tempList.filter(
+          (s) =>
+            Math.abs(pivotSquare.x - s.x) <= 1 &&
+            Math.abs(pivotSquare.y - s.y) <= 1 &&
+            !(pivotSquare.x === s.x && pivotSquare.y === s.y)
+        );
+        adjacentSquares.forEach((s) => {
+          if (!s.flipped) {
+            flipAdjacentSquares(s.x, s.y);
           }
-          setSquareList(tempList);
-          if (tempList[i][j].adjacentBombs === 0) {
-            for (let k = -1; k <= 1; k++) {
-              if (i - 1 >= 0 && j + k >= 0 && j + k <= size - 1) {
-                checkedAlreadyList.push(id);
-                flipAdjacentSquares(tempList[i - 1][j + k].id);
-              }
-            }
-            for (let k = -1; k <= 1; k++) {
-              if (k !== 0 && j + k >= 0 && j + k <= size - 1) {
-                checkedAlreadyList.push(id);
-                flipAdjacentSquares(tempList[i][j + k].id);
-              }
-            }
-            for (let k = -1; k <= 1; k++) {
-              if (i + 1 <= size - 1 && j + k >= 0 && j + k <= size - 1) {
-                checkedAlreadyList.push(id);
-                flipAdjacentSquares(tempList[i + 1][j + k].id);
-              }
-            }
-          }
-        }
+        });
       }
     }
   }
 
-  function gridLeftClickUpdate(id: number) {
+  function gridLeftClickUpdate(x: number, y: number) {
     if (!gameOver) {
       let tempList = [...squareList];
-      for (let i = 0; i < tempList.length; i++) {
-        for (let j = 0; j < tempList.length; j++) {
-          if (tempList[i][j].id === id) {
-            if (tempList[i][j].flagged) {
-              return;
-            }
-            if (!firstSquareClicked) {
-              while (tempList[i][j].bomb) {
-                tempList = getInitGrid(16);
-              }
-              setFirstSquareClicked(true);
-              setTimer(0);
-            }
-            tempList[i][j].flipped = true;
-            if (tempList[i][j].bomb) {
-              const bombSound = new Audio(`./sounds/explosion.mp3`);
-              bombSound.play();
-              endGame(false);
-            }
-            setSquareList(tempList);
-            flipAdjacentSquares(id);
-            if (getEmptySquareCount() === 0) {
-              endGame(true);
-            }
-          }
+      let clickedSquare = getSquare(x, y, tempList);
+      if (clickedSquare.flagged) {
+        return;
+      }
+      if (!firstSquareClicked) {
+        while (clickedSquare.bomb) {
+          tempList = getInitGrid(16);
+          clickedSquare = getSquare(x, y, tempList);
         }
+        setFirstSquareClicked(true);
+        setTimer(0);
+      }
+      clickedSquare.flipped = true;
+      if (clickedSquare.bomb) {
+        const bombSound = new Audio(`./sounds/explosion.mp3`);
+        bombSound.play();
+        endGame(false);
+      }
+      setSquareList([...tempList]);
+      if (clickedSquare.adjacentBombs === 0) {
+        flipAdjacentSquares(x, y);
+      }
+      if (squareList.filter((s) => !s.bomb && !s.flipped).length === 0) {
+        endGame(true);
       }
     }
   }
 
-  function gridRightClickUpdate(id: number) {
+  function gridRightClickUpdate(x: number, y: number) {
     if (!gameOver && firstSquareClicked) {
       let tempList = [...squareList];
-      for (let i = 0; i < tempList.length; i++) {
-        for (let j = 0; j < tempList.length; j++) {
-          if (tempList[i][j].id === id) {
-            if (tempList[i][j].flagged) {
-              tempList[i][j].flagged = !tempList[i][j].flagged;
-              setFlagsLeft(flagsLeft + 1);
-            } else {
-              if (flagsLeft > 0) {
-                tempList[i][j].flagged = !tempList[i][j].flagged;
-                setFlagsLeft(flagsLeft - 1);
-              }
-            }
-          }
+      const clickedSquare = getSquare(x, y, tempList);
+      if (clickedSquare.flagged) {
+        clickedSquare.flagged = false;
+      } else {
+        if (flagsLeft > 0) {
+          clickedSquare.flagged = true;
         }
       }
-      setSquareList(tempList);
+      setSquareList([...tempList]);
+      setFlagsLeft(40 - squareList.filter((s) => s.flagged).length);
     }
   }
 
-  function getEmptySquareCount() {
-    let count = 0;
-    for (let i = 0; i < squareList.length; i++) {
-      for (let j = 0; j < squareList.length; j++) {
-        if (!squareList[i][j].bomb && !squareList[i][j].flipped) {
-          count++;
-        }
-      }
-    }
-    return count;
+  function getSquare(x: number, y: number, list: MineSquareType[]) {
+    return list.filter((s) => s.x === x && s.y === y)[0];
   }
 
   function endGame(gameWon: boolean) {
@@ -215,7 +157,7 @@ function MineGrid() {
   }
 
   return (
-    <div className="Grid">
+    <div>
       <h1>MINESWEEPER</h1>
       <h2>{flagsLeft} BOMBS UNMARKED</h2>
       {firstSquareClicked && !gameOver ? (
@@ -223,14 +165,16 @@ function MineGrid() {
       ) : (
         <div></div>
       )}
-      {squareList.map((row, index) => (
-        <MineRow
-          key={index}
-          row={row}
-          leftClick={gridLeftClickUpdate}
-          rightClick={gridRightClickUpdate}
-        />
-      ))}
+      <div className="Grid">
+        {squareList.map((square, index) => (
+          <MineSquare
+            key={index}
+            square={square}
+            leftClick={gridLeftClickUpdate}
+            rightClick={gridRightClickUpdate}
+          />
+        ))}{" "}
+      </div>
       {gameOver ? (
         <MineGameOver gameWon={gameWon} finalTime={finalTime} />
       ) : (

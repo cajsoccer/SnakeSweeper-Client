@@ -9,6 +9,7 @@ function SnakeGrid() {
   const [gameOver, setGameOver] = useState(false);
   const [score, setScore] = useState(0);
   const [headDirection, setHeadDirection] = useState("left");
+  const [head, setHead] = useState({ xPos: 8, yPos: 8 });
 
   window.addEventListener("keydown", (event) => {
     switch (event.key) {
@@ -63,6 +64,10 @@ function SnakeGrid() {
       setSquareList(tempList);
     }
 
+    function updateSnake() {
+      const currentSnake = getCurrentSnake();
+    }
+
     function getCurrentSnake() {
       let snakeList = [];
       for (let i = 0; i < squareList.length; i++)
@@ -71,6 +76,14 @@ function SnakeGrid() {
             snakeList.push(squareList[i][j].id);
           }
       return snakeList;
+    }
+
+    function getCurrentHead() {
+      for (let i = 0; i < squareList.length; i++)
+        for (let j = 0; j < squareList.length; j++)
+          if (squareList[i][j].head) {
+            return squareList[i][j].id;
+          }
     }
 
     const interval = setInterval(() => {

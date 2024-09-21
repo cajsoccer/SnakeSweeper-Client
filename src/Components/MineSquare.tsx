@@ -5,17 +5,17 @@ import Flag from "../icons/Flag";
 
 interface MineSquareProps {
   square: MineSquareType;
-  leftClick: (x: number) => void;
-  rightClick: (x: number) => void;
+  leftClick: (x: number, y: number) => void;
+  rightClick: (x: number, y: number) => void;
 }
 
 function MineSquare({ square, leftClick, rightClick }: MineSquareProps) {
   return (
     <div
-      onClick={() => leftClick(square.id)}
+      onClick={() => leftClick(square.x, square.y)}
       onContextMenu={(event) => {
         event.preventDefault();
-        rightClick(square.id);
+        rightClick(square.x, square.y);
       }}
       className={
         (square.flipped ? "Flipped" : "Square") +
@@ -26,10 +26,11 @@ function MineSquare({ square, leftClick, rightClick }: MineSquareProps) {
     >
       {!square.flipped && square.flagged && <Flag />}
       {square.bomb && <Bomb />}
-      {!square.bomb &&
+      {square.flipped &&
+        !square.bomb &&
         square.adjacentBombs > 0 &&
         square.adjacentBombs.toString()}
-      {!square.bomb && square.adjacentBombs === 0 && "/"}
+      {square.flipped && !square.bomb && square.adjacentBombs === 0 && "/"}
     </div>
   );
 }
