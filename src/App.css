@@ -17,9 +17,16 @@ body {
 .Flipped {
   background-color: #aaa;
   border: 1px solid rgba(0, 0, 0, 0.8);
-  padding: 20px;
-  font-size: 30px;
   text-align: center;
+  width: 30px;
+  height: 30px;
+  border: #888 solid 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+  font-family: "Courier New", Courier, monospace;
 }
 
 .Flipped {
