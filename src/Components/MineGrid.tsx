@@ -46,12 +46,7 @@ function MineGrid() {
       randSquare.bomb = true;
     }
     initialSquareList.forEach((ps) => {
-      const adjacentSquares = initialSquareList.filter(
-        (ss) =>
-          Math.abs(ps.x - ss.x) <= 1 &&
-          Math.abs(ps.y - ss.y) <= 1 &&
-          !(ps.x === ss.x && ps.y === ss.y)
-      );
+      const adjacentSquares = initialSquareList.filter((ss) => Math.abs(ps.x - ss.x) <= 1 && Math.abs(ps.y - ss.y) <= 1 && !(ps.x === ss.x && ps.y === ss.y));
       adjacentSquares.forEach((ss) => {
         if (ss.bomb) ps.adjacentBombs++;
       });
@@ -73,10 +68,7 @@ function MineGrid() {
       pivotSquare = getSquare(x, y, tempList);
       if (pivotSquare.adjacentBombs === 0) {
         const adjacentSquares = tempList.filter(
-          (s) =>
-            Math.abs(pivotSquare.x - s.x) <= 1 &&
-            Math.abs(pivotSquare.y - s.y) <= 1 &&
-            !(pivotSquare.x === s.x && pivotSquare.y === s.y)
+          (s) => Math.abs(pivotSquare.x - s.x) <= 1 && Math.abs(pivotSquare.y - s.y) <= 1 && !(pivotSquare.x === s.x && pivotSquare.y === s.y)
         );
         adjacentSquares.forEach((s) => {
           if (!s.flipped) {
@@ -106,14 +98,10 @@ function MineGrid() {
       if (clickedSquare.bomb) {
         const bombSound = new Audio(`./sounds/explosion.mp3`);
         bombSound.play();
-        endGame(false);
       }
       setSquareList([...tempList]);
       if (clickedSquare.adjacentBombs === 0) {
         flipAdjacentSquares(x, y);
-      }
-      if (squareList.filter((s) => !s.bomb && !s.flipped).length === 0) {
-        endGame(true);
       }
     }
   }
@@ -156,30 +144,27 @@ function MineGrid() {
     return `${minutesStr}:${secondsStr}`;
   }
 
+  if (gameOver === false && gameWon === false) {
+    if (squareList.filter((s) => !s.bomb && !s.flipped).length === 0) {
+      endGame(true);
+    }
+
+    if (squareList.filter((s) => s.bomb && s.flipped).length > 0) {
+      endGame(false);
+    }
+  }
+
   return (
     <div>
       <h1>MINESWEEPER</h1>
       <h2>{flagsLeft} BOMBS UNMARKED</h2>
-      {firstSquareClicked && !gameOver ? (
-        <h2>TIME ELAPSED: {getTime()}</h2>
-      ) : (
-        <div></div>
-      )}
+      {firstSquareClicked && !gameOver ? <h2>TIME ELAPSED: {getTime()}</h2> : <div></div>}
       <div className="Grid">
         {squareList.map((square, index) => (
-          <MineSquare
-            key={index}
-            square={square}
-            leftClick={gridLeftClickUpdate}
-            rightClick={gridRightClickUpdate}
-          />
+          <MineSquare key={index} square={square} leftClick={gridLeftClickUpdate} rightClick={gridRightClickUpdate} />
         ))}{" "}
       </div>
-      {gameOver ? (
-        <MineGameOver gameWon={gameWon} finalTime={finalTime} />
-      ) : (
-        <div></div>
-      )}
+      {gameOver ? <MineGameOver gameWon={gameWon} finalTime={finalTime} /> : <div></div>}
     </div>
   );
 }
