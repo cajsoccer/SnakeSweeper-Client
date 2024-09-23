@@ -11,7 +11,7 @@ function SnakeSquare({ square }: SnakeSquareProps) {
       className={
         "Square" +
         (square.head ? " Head" : "") +
-        (square.tail ? " Tail" : "") +
+        (square.bodyPos > 0 ? " Body" : "") +
         (square.fruit ? " Fruit" : "")
       }
     ></div>

@@ -9,10 +9,9 @@ export interface MineSquareType {
 }
 
 export interface SnakeSquareType {
-  id: number;
-  xPos: number;
-  yPos: number;
+  x: number;
+  y: number;
+  bodyPos: 0;
   head: boolean;
-  tail: boolean;
   fruit: boolean;
 }

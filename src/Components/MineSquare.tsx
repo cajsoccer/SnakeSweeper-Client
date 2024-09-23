@@ -25,7 +25,7 @@ function MineSquare({ square, leftClick, rightClick }: MineSquareProps) {
       }
     >
       {!square.flipped && square.flagged && <Flag />}
-      {square.bomb && <Bomb />}
+      {square.flipped && square.bomb && <Bomb />}
       {square.flipped &&
         !square.bomb &&
         square.adjacentBombs > 0 &&

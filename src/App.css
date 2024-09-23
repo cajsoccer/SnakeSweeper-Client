@@ -53,11 +53,11 @@ body {
 }
 
 .Head {
-  background-color: purple;
+  background-color: blue;
 }
 
-.Tail {
-  background-color: blue;
+.Body {
+  background-color: purple;
 }
 
 .Fruit {
