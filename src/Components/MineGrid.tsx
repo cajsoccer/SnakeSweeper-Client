@@ -46,7 +46,12 @@ function getInitGrid(size: number) {
     randSquare.bomb = true;
   }
   initialSquareList.forEach((ps) => {
-    const adjacentSquares = initialSquareList.filter((ss) => Math.abs(ps.x - ss.x) <= 1 && Math.abs(ps.y - ss.y) <= 1 && !(ps.x === ss.x && ps.y === ss.y));
+    const adjacentSquares = initialSquareList.filter(
+      (ss) =>
+        Math.abs(ps.x - ss.x) <= 1 &&
+        Math.abs(ps.y - ss.y) <= 1 &&
+        !(ps.x === ss.x && ps.y === ss.y)
+    );
     adjacentSquares.forEach((ss) => {
       if (ss.bomb) ps.adjacentBombs++;
     });
@@ -54,7 +59,13 @@ function getInitGrid(size: number) {
   return initialSquareList;
 }
 
-function gridRightClickUpdate(gameOver: boolean, firstSquareClicked: boolean, squareList: MineSquareType[], x: number, y: number) {
+function gridRightClickUpdate(
+  gameOver: boolean,
+  firstSquareClicked: boolean,
+  squareList: MineSquareType[],
+  x: number,
+  y: number
+) {
   if (!gameOver && firstSquareClicked) {
     const clickedSquare = getSquare(x, y, squareList);
     if (clickedSquare.flagged) {
@@ -68,7 +79,11 @@ function gridRightClickUpdate(gameOver: boolean, firstSquareClicked: boolean, sq
   return squareList;
 }
 
-function getAdjacentSquaresToFlip(squareList: MineSquareType[], x: number, y: number) {
+function getAdjacentSquaresToFlip(
+  squareList: MineSquareType[],
+  x: number,
+  y: number
+) {
   let toFlip: MineSquareType[] = [];
   const pivotSquare = getSquare(x, y, squareList);
   if (!pivotSquare.bomb) {
@@ -76,7 +91,11 @@ function getAdjacentSquaresToFlip(squareList: MineSquareType[], x: number, y: nu
     pivotSquare.flipped = true;
     if (pivotSquare.adjacentBombs === 0) {
       const adjacentSquares = squareList.filter(
-        (s) => !s.flipped && Math.abs(pivotSquare.x - s.x) <= 1 && Math.abs(pivotSquare.y - s.y) <= 1 && !(pivotSquare.x === s.x && pivotSquare.y === s.y)
+        (s) =>
+          !s.flipped &&
+          Math.abs(pivotSquare.x - s.x) <= 1 &&
+          Math.abs(pivotSquare.y - s.y) <= 1 &&
+          !(pivotSquare.x === s.x && pivotSquare.y === s.y)
       );
       adjacentSquares.forEach((s) => {
         toFlip = [...toFlip, ...getAdjacentSquaresToFlip(squareList, s.x, s.y)];
@@ -107,6 +126,8 @@ function MineGrid() {
     if (gameWon) {
       setGameOver(true);
       setGameWon(true);
+      const victorySound = new Audio(`./sounds/victory.mp3`);
+      victorySound.play();
     } else {
       setGameOver(true);
     }
@@ -152,17 +173,37 @@ function MineGrid() {
                   const bombSound = new Audio(`./sounds/explosion.mp3`);
                   bombSound.play();
                 } else {
-                  getAdjacentSquaresToFlip(tempList, x, y).forEach((s) => (getSquare(s.x, s.y, tempList).flipped = true));
+                  getAdjacentSquaresToFlip(tempList, x, y).forEach(
+                    (s) => (getSquare(s.x, s.y, tempList).flipped = true)
+                  );
                 }
                 setSquareList([...tempList]);
               }
             }}
-            rightClick={(x: number, y: number) => setSquareList(gridRightClickUpdate(gameOver, firstSquareClicked, squareList, x, y))}
+            rightClick={(x: number, y: number) =>
+              setSquareList(
+                gridRightClickUpdate(
+                  gameOver,
+                  firstSquareClicked,
+                  squareList,
+                  x,
+                  y
+                )
+              )
+            }
           />
         ))}{" "}
       </div>
-      {firstSquareClicked && !gameOver ? <h2>TIME ELAPSED: {getTime(timer)}</h2> : <div></div>}
-      {gameOver ? <MineGameOver gameWon={gameWon} finalTime={finalTime} /> : <div></div>}
+      {firstSquareClicked && !gameOver ? (
+        <h2>TIME ELAPSED: {getTime(timer)}</h2>
+      ) : (
+        <div></div>
+      )}
+      {gameOver ? (
+        <MineGameOver gameWon={gameWon} finalTime={finalTime} />
+      ) : (
+        <div></div>
+      )}
     </div>
   );
 }

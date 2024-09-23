@@ -71,6 +71,8 @@ function SnakeGrid() {
       prevFruit.fruit = false;
       nextFruit.fruit = true;
       setFruitNum(Math.ceil(Math.random() * 3));
+      const biteSound = new Audio(`./sounds/bite.mp3`);
+      biteSound.play();
     }
 
     function findTail(list: SnakeSquareType[]) {
@@ -98,6 +100,8 @@ function SnakeGrid() {
             )[0];
             if (prevHead.y === 0 || prevBody.includes(nextHead)) {
               setGameOver(true);
+              const bounceSound = new Audio(`./sounds/bounce.mp3`);
+              bounceSound.play();
             } else {
               nextHead.head = true;
               prevHead.bodyPos = 1;
@@ -124,6 +128,8 @@ function SnakeGrid() {
               prevBody.includes(nextHead)
             ) {
               setGameOver(true);
+              const bounceSound = new Audio(`./sounds/bounce.mp3`);
+              bounceSound.play();
             } else {
               nextHead.head = true;
               prevHead.bodyPos = 1;
@@ -147,6 +153,8 @@ function SnakeGrid() {
             )[0];
             if (prevHead.x === 0 || prevBody.includes(nextHead)) {
               setGameOver(true);
+              const bounceSound = new Audio(`./sounds/bounce.mp3`);
+              bounceSound.play();
             } else {
               nextHead.head = true;
               prevHead.bodyPos = 1;
@@ -173,6 +181,8 @@ function SnakeGrid() {
               prevBody.includes(nextHead)
             ) {
               setGameOver(true);
+              const bounceSound = new Audio(`./sounds/bounce.mp3`);
+              bounceSound.play();
             } else {
               nextHead.head = true;
               prevHead.bodyPos = 1;
