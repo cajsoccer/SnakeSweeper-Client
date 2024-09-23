@@ -9,7 +9,7 @@ function SnakeGrid() {
   const [gameOver, setGameOver] = useState(false);
   const [score, setScore] = useState(0);
   const [headDirection, setHeadDirection] = useState("left");
-  const [fruitNum, setFruitNum] = useState(1);
+  const [fruitNum, setFruitNum] = useState(Math.ceil(Math.random() * 3));
 
   useEffect(() => {
     function updateHeadDirection(event: KeyboardEvent) {
@@ -238,7 +238,12 @@ function SnakeGrid() {
       {!gameOver && score > 0 ? <h2>FRUITS EATEN: {score}</h2> : <div></div>}
       <div className="Grid">
         {squareList.map((square, index) => (
-          <SnakeSquare key={index} square={square} fruitNum={fruitNum} />
+          <SnakeSquare
+            key={index}
+            square={square}
+            fruitNum={fruitNum}
+            headDirection={headDirection}
+          />
         ))}
       </div>
       {gameOver ? <SnakeGameOver score={score} /> : <div></div>}

@@ -1,7 +1,7 @@
 import React from "react";
 import "../App.css";
 import SnakeGrid from "./SnakeGrid";
-//import MineGrid from "./MineGrid";
+import MineGrid from "./MineGrid";
 
 function App() {
   return (
@@ -9,6 +9,7 @@ function App() {
       style={{ display: "flex", alignItems: "center", flexDirection: "column" }}
     >
       <SnakeGrid />
+      <MineGrid />
     </div>
   );
 }

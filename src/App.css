@@ -51,15 +51,3 @@ body {
 .GameOver {
   color: white;
 }
-
-.Head {
-  background-color: blue;
-}
-
-.Body {
-  background-color: purple;
-}
-
-.Fruit {
-  background-color: red;
-}
