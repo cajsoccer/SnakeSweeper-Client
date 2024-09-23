@@ -59,69 +59,118 @@ function SnakeGrid() {
       randSquare.fruit = true;
     }
 
+    function findTail(list: SnakeSquareType[]) {
+      let tail: SnakeSquareType = {} as SnakeSquareType;
+      let maxTail = 0;
+      list.forEach((s) => {
+        if (s.bodyPos > maxTail) {
+          tail = s;
+          maxTail = s.bodyPos;
+        }
+      });
+      return tail;
+    }
+
     const interval = setInterval(() => {
       if (!gamePaused) {
         let tempSquareList = structuredClone(squareList);
         let prevHead = tempSquareList.filter((s) => s.head)[0];
+        let prevBody = tempSquareList.filter((s) => s.bodyPos > 0);
         prevHead.head = false;
         switch (headDirection) {
-          case "left":
-            if (prevHead.y === 0) {
+          case "left": {
+            const nextHead = tempSquareList.filter(
+              (s) => s.x === prevHead.x && s.y === prevHead.y - 1
+            )[0];
+            if (prevHead.y === 0 || prevBody.includes(nextHead)) {
               setGameOver(true);
             } else {
-              const nextHead = tempSquareList.filter(
-                (s) => s.x === prevHead.x && s.y === prevHead.y - 1
-              )[0];
               nextHead.head = true;
+              prevHead.bodyPos = 1;
+              prevBody.forEach((s) => s.bodyPos++);
               if (nextHead.fruit) {
                 updateFruit(tempSquareList, nextHead.x, nextHead.y);
-
                 setScore(score + 1);
+              } else {
+                let tail = findTail(tempSquareList);
+                if (tail) {
+                  tail.bodyPos = 0;
+                }
               }
               setSquareList(tempSquareList);
             }
             return;
-          case "right":
-            if (prevHead.y === tempSquareList.length - 1) {
+          }
+          case "right": {
+            const nextHead = tempSquareList.filter(
+              (s) => s.x === prevHead.x && s.y === prevHead.y + 1
+            )[0];
+            if (
+              prevHead.y === Math.sqrt(tempSquareList.length) - 1 ||
+              prevBody.includes(nextHead)
+            ) {
               setGameOver(true);
             } else {
-              const nextHead = tempSquareList.filter(
-                (s) => s.x === prevHead.x && s.y === prevHead.y + 1
-              )[0];
               nextHead.head = true;
+              prevHead.bodyPos = 1;
+              prevBody.forEach((s) => s.bodyPos++);
               if (nextHead.fruit) {
                 updateFruit(tempSquareList, nextHead.x, nextHead.y);
                 setScore(score + 1);
+              } else {
+                let tail = findTail(tempSquareList);
+                if (tail) {
+                  tail.bodyPos = 0;
+                }
               }
               setSquareList(tempSquareList);
             }
             return;
-          case "up":
-            if (prevHead.y === 0) {
+          }
+          case "up": {
+            const nextHead = tempSquareList.filter(
+              (s) => s.x === prevHead.x - 1 && s.y === prevHead.y
+            )[0];
+            if (prevHead.x === 0 || prevBody.includes(nextHead)) {
               setGameOver(true);
             } else {
-              const nextHead = tempSquareList.filter(
-                (s) => s.x === prevHead.x - 1 && s.y === prevHead.y
-              )[0];
               nextHead.head = true;
+              prevHead.bodyPos = 1;
+              prevBody.forEach((s) => s.bodyPos++);
               if (nextHead.fruit) {
                 updateFruit(tempSquareList, nextHead.x, nextHead.y);
                 setScore(score + 1);
+              } else {
+                let tail = findTail(tempSquareList);
+                if (tail) {
+                  tail.bodyPos = 0;
+                }
               }
               setSquareList(tempSquareList);
             }
             return;
+          }
           case "down":
-            if (prevHead.y === tempSquareList.length - 1) {
+            const nextHead = tempSquareList.filter(
+              (s) => s.x === prevHead.x + 1 && s.y === prevHead.y
+            )[0];
+            if (
+              prevHead.x === Math.sqrt(tempSquareList.length) - 1 ||
+              prevBody.includes(nextHead)
+            ) {
               setGameOver(true);
             } else {
-              const nextHead = tempSquareList.filter(
-                (s) => s.x === prevHead.x + 1 && s.y === prevHead.y
-              )[0];
               nextHead.head = true;
+              prevHead.bodyPos = 1;
+              prevBody.forEach((s) => s.bodyPos++);
               if (nextHead.fruit) {
                 updateFruit(tempSquareList, nextHead.x, nextHead.y);
                 setScore(score + 1);
+              } else {
+                let tail = findTail(tempSquareList);
+                if (tail) {
+                  tail.bodyPos = 0;
+                }
               }
               setSquareList(tempSquareList);
             }
@@ -130,7 +179,7 @@ function SnakeGrid() {
             return;
         }
       }
-    }, 100);
+    }, 75);
     return () => clearInterval(interval);
   }, [squareList, headDirection, gamePaused, score]);
 

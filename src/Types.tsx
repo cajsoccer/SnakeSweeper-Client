@@ -11,7 +11,7 @@ export interface MineSquareType {
 export interface SnakeSquareType {
   x: number;
   y: number;
-  bodyPos: 0;
+  bodyPos: number;
   head: boolean;
   fruit: boolean;
 }
