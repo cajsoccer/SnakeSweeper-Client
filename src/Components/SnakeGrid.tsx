@@ -9,54 +9,68 @@ function SnakeGrid() {
   const [gameOver, setGameOver] = useState(false);
   const [score, setScore] = useState(0);
   const [headDirection, setHeadDirection] = useState("left");
-
-  window.addEventListener("keydown", (event) => {
-    switch (event.key) {
-      case "ArrowLeft":
-        if (headDirection !== "right") {
-          setHeadDirection("left");
-        }
-        break;
-      case "ArrowRight":
-        if (headDirection !== "left") {
-          console.log(headDirection);
-          setHeadDirection("right");
-        }
-        break;
-      case "ArrowDown":
-        if (headDirection !== "up") {
-          setHeadDirection("down");
-        }
-        break;
-      case "ArrowUp":
-        if (headDirection !== "down") {
-          setHeadDirection("up");
-        }
-        break;
-      case " ":
-        setGamePaused(!gamePaused);
-        break;
-      default:
-        break;
-    }
-  });
+  const [fruitNum, setFruitNum] = useState(1);
 
   useEffect(() => {
-    function updateFruit(list: SnakeSquareType[], x: number, y: number) {
-      list.filter((s) => s.fruit)[0].fruit = false;
-      let randSquare = getSquare(
+    function updateHeadDirection(event: KeyboardEvent) {
+      switch (event.key) {
+        case "ArrowLeft":
+          if (headDirection !== "right") {
+            setHeadDirection("left");
+          }
+          break;
+        case "ArrowRight":
+          if (headDirection !== "left") {
+            setHeadDirection("right");
+          }
+          break;
+        case "ArrowDown":
+          if (headDirection !== "up") {
+            setHeadDirection("down");
+          }
+          break;
+        case "ArrowUp":
+          if (headDirection !== "down") {
+            setHeadDirection("up");
+          }
+          break;
+        case " ":
+          setGamePaused(!gamePaused);
+          break;
+        default:
+          break;
+      }
+    }
+    document.addEventListener("keydown", updateHeadDirection);
+    return function () {
+      document.removeEventListener("keydown", updateHeadDirection);
+    };
+  }, [gamePaused, headDirection]);
+
+  useEffect(() => {
+    function updateFruit(list: SnakeSquareType[]) {
+      let prevFruit = list.filter((s) => s.fruit)[0];
+      let prevHead = list.filter((s) => s.head)[0];
+      let prevBody = list.filter((s) => s.bodyPos > 0);
+      let nextFruit = getSquare(
         list,
         Math.floor(Math.random() * 16),
         Math.floor(Math.random() * 16)
       );
-      while (randSquare.x === x && randSquare.y === y) {
-        randSquare = getSquare(
+      while (
+        nextFruit === prevFruit ||
+        nextFruit === prevHead ||
+        prevBody.includes(nextFruit)
+      ) {
+        nextFruit = getSquare(
           list,
           Math.floor(Math.random() * 16),
           Math.floor(Math.random() * 16)
         );
       }
-      randSquare.fruit = true;
+      prevFruit.fruit = false;
+      nextFruit.fruit = true;
+      setFruitNum(Math.ceil(Math.random() * 3));
     }
 
     function findTail(list: SnakeSquareType[]) {
@@ -72,7 +86,7 @@ function SnakeGrid() {
     }
 
     const interval = setInterval(() => {
-      if (!gamePaused) {
+      if (!gamePaused && !gameOver) {
         let tempSquareList = structuredClone(squareList);
         let prevHead = tempSquareList.filter((s) => s.head)[0];
         let prevBody = tempSquareList.filter((s) => s.bodyPos > 0);
@@ -89,7 +103,7 @@ function SnakeGrid() {
               prevHead.bodyPos = 1;
               prevBody.forEach((s) => s.bodyPos++);
               if (nextHead.fruit) {
-                updateFruit(tempSquareList, nextHead.x, nextHead.y);
+                updateFruit(tempSquareList);
                 setScore(score + 1);
               } else {
                 let tail = findTail(tempSquareList);
@@ -115,7 +129,7 @@ function SnakeGrid() {
               prevHead.bodyPos = 1;
               prevBody.forEach((s) => s.bodyPos++);
               if (nextHead.fruit) {
-                updateFruit(tempSquareList, nextHead.x, nextHead.y);
+                updateFruit(tempSquareList);
                 setScore(score + 1);
               } else {
                 let tail = findTail(tempSquareList);
@@ -138,7 +152,7 @@ function SnakeGrid() {
               prevHead.bodyPos = 1;
               prevBody.forEach((s) => s.bodyPos++);
               if (nextHead.fruit) {
-                updateFruit(tempSquareList, nextHead.x, nextHead.y);
+                updateFruit(tempSquareList);
                 setScore(score + 1);
               } else {
                 let tail = findTail(tempSquareList);
@@ -164,7 +178,7 @@ function SnakeGrid() {
               prevHead.bodyPos = 1;
               prevBody.forEach((s) => s.bodyPos++);
               if (nextHead.fruit) {
-                updateFruit(tempSquareList, nextHead.x, nextHead.y);
+                updateFruit(tempSquareList);
                 setScore(score + 1);
               } else {
                 let tail = findTail(tempSquareList);
@@ -181,7 +195,7 @@ function SnakeGrid() {
       }
     }, 75);
     return () => clearInterval(interval);
-  }, [squareList, headDirection, gamePaused, score]);
+  }, [squareList, headDirection, gamePaused, gameOver, score]);
 
   function getInitGrid(size: number) {
     let initialSquareList: SnakeSquareType[] = [];
@@ -197,20 +211,19 @@ function SnakeGrid() {
       }
     }
     const head = initialSquareList.filter((s) => s.x === 8 && s.y === 8)[0];
-    console.log(head);
-    head.head = true;
     let firstFruit = getSquare(
       initialSquareList,
       Math.floor(Math.random() * 16),
       Math.floor(Math.random() * 16)
     );
-    while (firstFruit.x === head.x && firstFruit.y === head.y) {
+    while (firstFruit === head) {
       firstFruit = getSquare(
         initialSquareList,
         Math.floor(Math.random() * 16),
         Math.floor(Math.random() * 16)
       );
     }
+    head.head = true;
     firstFruit.fruit = true;
     return initialSquareList;
   }
@@ -225,7 +238,7 @@ function SnakeGrid() {
       {!gameOver && score > 0 ? <h2>FRUITS EATEN: {score}</h2> : <div></div>}
       <div className="Grid">
         {squareList.map((square, index) => (
-          <SnakeSquare key={index} square={square} />
+          <SnakeSquare key={index} square={square} fruitNum={fruitNum} />
         ))}
       </div>
       {gameOver ? <SnakeGameOver score={score} /> : <div></div>}

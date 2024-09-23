@@ -1,11 +1,13 @@
 import React from "react";
 import { SnakeSquareType } from "../Types";
+import Bomb from "../icons/Bomb";
 
 interface SnakeSquareProps {
   square: SnakeSquareType;
+  fruitNum: number;
 }
 
-function SnakeSquare({ square }: SnakeSquareProps) {
+function SnakeSquare({ square, fruitNum }: SnakeSquareProps) {
   return (
     <div
       className={
@@ -14,7 +16,9 @@ function SnakeSquare({ square }: SnakeSquareProps) {
         (square.bodyPos > 0 ? " Body" : "") +
         (square.fruit ? " Fruit" : "")
       }
-    ></div>
+    >
+      {square.fruit && fruitNum === 1 ? <Bomb /> : <div></div>}
+    </div>
   );
 }
 

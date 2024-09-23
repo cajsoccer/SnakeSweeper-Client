@@ -7,7 +7,7 @@ interface GameOverProps {
 
 function MineGameOver({ gameWon, finalTime }: GameOverProps) {
   return (
-    <div className="gameOver">
+    <div className="GameOver">
       {gameWon ? (
         <div>
           <h1>CONGRATULATIONS, YOU WON!</h1>

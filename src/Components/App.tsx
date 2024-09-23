@@ -1,7 +1,7 @@
 import React from "react";
 import "../App.css";
-//import MineGrid from "./MineGrid";
 import SnakeGrid from "./SnakeGrid";
+//import MineGrid from "./MineGrid";
 
 function App() {
   return (
