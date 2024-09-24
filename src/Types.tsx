@@ -15,3 +15,10 @@ export interface SnakeSquareType {
   head: boolean;
   fruit: boolean;
 }
+
+export enum Direction {
+  Left,
+  Up,
+  Right,
+  Down,
+}
