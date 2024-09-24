@@ -15,11 +15,24 @@ body {
 .Square,
 .Flipped {
   background-color: #aaa;
-  border: 1px solid rgba(0, 0, 0, 0.8);
   text-align: center;
   width: 30px;
   height: 30px;
   border: #888 solid 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+  font-family: "Courier New", Courier, monospace;
+}
+
+.SnakeSquare {
+  background-color: #468010;
+  text-align: center;
+  width: 30px;
+  height: 30px;
+  border: #30590a solid 1px;
   display: flex;
   align-items: center;
   justify-content: center;
