@@ -1,15 +1,16 @@
 import React from "react";
 import "../App.css";
-import SnakeGrid from "./SnakeGrid";
-import MineGrid from "./MineGrid";
+import Header from "./Header";
+import { router } from "../Routes/Routes";
+import { RouterProvider } from "react-router-dom";
 
 function App() {
   return (
     <div
       style={{ display: "flex", alignItems: "center", flexDirection: "column" }}
     >
-      <SnakeGrid />
-      <MineGrid />
+      <Header />
+      <RouterProvider router={router} />
     </div>
   );
 }

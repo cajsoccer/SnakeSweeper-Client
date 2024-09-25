@@ -1,7 +1,7 @@
 import React from "react";
-import { MineSquareType } from "../Types";
-import Bomb from "../icons/Bomb";
-import Flag from "../icons/Flag";
+import { MineSquareType } from "../../Types";
+import Bomb from "../Icons/Bomb";
+import Flag from "../Icons/Flag";
 
 interface MineSquareProps {
   square: MineSquareType;
@@ -25,7 +25,7 @@ function MineSquare({ square, leftClick, rightClick }: MineSquareProps) {
       }
     >
       {!square.flipped && square.flagged && <Flag />}
-      {square.bomb && <Bomb />}
+      {square.flipped && square.bomb && <Bomb />}
       {square.flipped &&
         !square.bomb &&
         square.adjacentBombs > 0 &&

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Direction, SnakeSquareType } from "../Types";
+import { Direction, SnakeSquareType } from "../../Types";
 import SnakeGameOver from "./SnakeGameOver";
 import SnakeSquare from "./SnakeSquare";
 
@@ -11,9 +11,21 @@ function updateFruit(list: SnakeSquareType[]) {
   let prevFruit = list.filter((s) => s.fruit)[0];
   let prevHead = list.filter((s) => s.head)[0];
   let prevBody = list.filter((s) => s.bodyPos > 0);
-  let nextFruit = getSquare(list, Math.floor(Math.random() * 16), Math.floor(Math.random() * 16));
-  while (nextFruit === prevFruit || nextFruit === prevHead || prevBody.includes(nextFruit)) {
-    nextFruit = getSquare(list, Math.floor(Math.random() * 16), Math.floor(Math.random() * 16));
+  let nextFruit = getSquare(
+    list,
+    Math.floor(Math.random() * 16),
+    Math.floor(Math.random() * 16)
+  );
+  while (
+    nextFruit === prevFruit ||
+    nextFruit === prevHead ||
+    prevBody.includes(nextFruit)
+  ) {
+    nextFruit = getSquare(
+      list,
+      Math.floor(Math.random() * 16),
+      Math.floor(Math.random() * 16)
+    );
   }
   prevFruit.fruit = false;
   nextFruit.fruit = true;
@@ -34,16 +46,28 @@ function findTail(list: SnakeSquareType[]) {
   return tail;
 }
 
-function getNextSquare(tempSquareList: SnakeSquareType[], prevHead: SnakeSquareType, tempDirection: Direction) {
+function getNextSquare(
+  tempSquareList: SnakeSquareType[],
+  prevHead: SnakeSquareType,
+  tempDirection: Direction
+) {
   switch (tempDirection) {
     case Direction.Left:
-      return tempSquareList.filter((s) => s.x === prevHead.x && s.y === prevHead.y - 1)[0];
+      return tempSquareList.filter(
+        (s) => s.x === prevHead.x && s.y === prevHead.y - 1
+      )[0];
     case Direction.Right:
-      return tempSquareList.filter((s) => s.x === prevHead.x && s.y === prevHead.y + 1)[0];
+      return tempSquareList.filter(
+        (s) => s.x === prevHead.x && s.y === prevHead.y + 1
+      )[0];
     case Direction.Up:
-      return tempSquareList.filter((s) => s.x === prevHead.x - 1 && s.y === prevHead.y)[0];
+      return tempSquareList.filter(
+        (s) => s.x === prevHead.x - 1 && s.y === prevHead.y
+      )[0];
     case Direction.Down:
-      return tempSquareList.filter((s) => s.x === prevHead.x + 1 && s.y === prevHead.y)[0];
+      return tempSquareList.filter(
+        (s) => s.x === prevHead.x + 1 && s.y === prevHead.y
+      )[0];
   }
 }
 
@@ -88,37 +112,7 @@ function SnakeGrid() {
     }
   }
 
-  function gameLoop() {
-    if (!gamePaused && !gameOver) {
-      let tempSquareList = structuredClone(squareList);
-      let prevHead = tempSquareList.filter((s) => s.head)[0];
-      let prevBody = tempSquareList.filter((s) => s.bodyPos > 0);
-      prevHead.head = false;
-      setHeadDirection(tempDirection);
-      const nextHead = getNextSquare(tempSquareList, prevHead, tempDirection);
-      if (nextHead === undefined || prevBody.includes(nextHead)) {
-        setGameOver(true);
-        const bounceSound = new Audio(`./sounds/bounce.mp3`);
-        bounceSound.play();
-      } else {
-        nextHead.head = true;
-        prevHead.bodyPos = 1;
-        prevBody.forEach((s) => s.bodyPos++);
-        if (nextHead.fruit) {
-          setFruitNum(updateFruit(tempSquareList));
-          setScore(score + 1);
-        } else {
-          let tail = findTail(tempSquareList);
-          if (tail) {
-            tail.bodyPos = 0;
-          }
-        }
-        setSquareList(tempSquareList);
-      }
-    }
-  }
-
-  React.useEffect(() => {
+  useEffect(() => {
     let frameId: number;
     const frame = (time: number) => {
       setFrameTime(time);
@@ -129,11 +123,48 @@ function SnakeGrid() {
   }, []);
 
   useEffect(() => {
+    function gameLoop() {
+      if (!gamePaused && !gameOver) {
+        let tempSquareList = structuredClone(squareList);
+        let prevHead = tempSquareList.filter((s) => s.head)[0];
+        let prevBody = tempSquareList.filter((s) => s.bodyPos > 0);
+        prevHead.head = false;
+        setHeadDirection(tempDirection);
+        const nextHead = getNextSquare(tempSquareList, prevHead, tempDirection);
+        if (nextHead === undefined || prevBody.includes(nextHead)) {
+          setGameOver(true);
+          const bounceSound = new Audio(`./sounds/bounce.mp3`);
+          bounceSound.play();
+        } else {
+          nextHead.head = true;
+          prevHead.bodyPos = 1;
+          prevBody.forEach((s) => s.bodyPos++);
+          if (nextHead.fruit) {
+            setFruitNum(updateFruit(tempSquareList));
+            setScore(score + 1);
+          } else {
+            let tail = findTail(tempSquareList);
+            if (tail) {
+              tail.bodyPos = 0;
+            }
+          }
+          setSquareList(tempSquareList);
+        }
+      }
+    }
     if (frameTime - lastTimestamp >= 75) {
       setLastTimestamp(frameTime);
       gameLoop();
     }
-  }, [frameTime]);
+  }, [
+    frameTime,
+    lastTimestamp,
+    gameOver,
+    gamePaused,
+    score,
+    squareList,
+    tempDirection,
+  ]);
 
   function getInitGrid(size: number) {
     let initialSquareList: SnakeSquareType[] = [];
@@ -149,9 +180,17 @@ function SnakeGrid() {
       }
     }
     const head = initialSquareList.filter((s) => s.x === 8 && s.y === 8)[0];
-    let firstFruit = getSquare(initialSquareList, Math.floor(Math.random() * 16), Math.floor(Math.random() * 16));
+    let firstFruit = getSquare(
+      initialSquareList,
+      Math.floor(Math.random() * 16),
+      Math.floor(Math.random() * 16)
+    );
     while (firstFruit === head) {
-      firstFruit = getSquare(initialSquareList, Math.floor(Math.random() * 16), Math.floor(Math.random() * 16));
+      firstFruit = getSquare(
+        initialSquareList,
+        Math.floor(Math.random() * 16),
+        Math.floor(Math.random() * 16)
+      );
     }
     head.head = true;
     firstFruit.fruit = true;
@@ -171,7 +210,12 @@ function SnakeGrid() {
         tabIndex={0}
       >
         {squareList.map((square, index) => (
-          <SnakeSquare key={index} square={square} fruitNum={fruitNum} headDirection={headDirection} />
+          <SnakeSquare
+            key={index}
+            square={square}
+            fruitNum={fruitNum}
+            headDirection={headDirection}
+          />
         ))}
       </div>
       {gameOver ? <SnakeGameOver score={score} /> : <div></div>}
