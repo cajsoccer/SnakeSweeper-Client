@@ -1,15 +1,15 @@
 import React from "react";
 import "../App.css";
-import Header from "./Header";
 import { router } from "../Routes/Routes";
 import { RouterProvider } from "react-router-dom";
+import NavBar from "./NavBar";
 
 function App() {
   return (
     <div
       style={{ display: "flex", alignItems: "center", flexDirection: "column" }}
     >
-      <Header />
+      <NavBar loggedIn={true} />
       <RouterProvider router={router} />
     </div>
   );

@@ -22,3 +22,19 @@ export enum Direction {
   Right,
   Down,
 }
+
+export interface ScoreListItem {
+  user: string;
+  score: number;
+}
+
+export interface LoginValues {
+  email: string;
+  password: string;
+}
+
+export interface RegisterValues {
+  email: string;
+  password1: string;
+  password2: string;
+}
